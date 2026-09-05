@@ -24,7 +24,7 @@ NC='\033[0m'
 # ----------------------------
 echo -e "${GREEN}[1/3] Installing base tools...${NC}"
 sudo apt update
-sudo apt install -y openvpn curl firefox-esr golang remmina
+sudo apt install -y openvpn curl firefox-esr golang
 sudo apt install -y python3-requests python3-scapy
 
 # These are my everyday choices. Please make sure to add yours.

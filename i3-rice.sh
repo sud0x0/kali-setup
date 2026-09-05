@@ -41,7 +41,7 @@ sudo apt update || die "apt update failed. Check networking and /etc/apt/sources
 sudo apt install -y xserver-xorg xserver-xorg-input-all i3 xinit lightdm lightdm-gtk-greeter \
     || die "Core package install failed. Nothing below will work without these."
 
-sudo apt install -y thunar picom feh lxappearance rofi polybar vim alacritty \
+sudo apt install -y thunar picom feh lxappearance rofi polybar vim alacritty openssh-server \
     || warn "Optional package install failed. Some rice components will be missing."
 
 # ----------------------------
@@ -56,6 +56,13 @@ sudo systemctl enable lightdm || warn "Could not enable the lightdm service"
 sudo systemctl set-default graphical.target || warn "Could not set graphical.target as the default"
 
 echo "exec i3" > ~/.xinitrc || warn "Could not write ~/.xinitrc"
+
+# ----------------------------
+# Enable SSH
+# ----------------------------
+echo -e "${GREEN}[2b/9] Enabling SSH...${NC}"
+
+sudo systemctl enable --now ssh || warn "Could not enable the ssh service"
 
 # ----------------------------
 # Wallpaper Setup
@@ -100,6 +107,10 @@ if [ -f ~/.config/i3/config ]; then
     sed -i 's/^bindsym Mod1+d focus child/#bindsym Mod1+d focus child/' ~/.config/i3/config
     sed -i 's/^#bindsym Mod1+d focus child/#bindsym Mod1+d focus child/' ~/.config/i3/config
 
+    # Add custom settings to i3 config (using Mod1 explicitly to match default config)
+    # Guarded by a marker so re-running the script does not append the block twice.
+    # A duplicated block gives "Duplicate keybinding in config file" for Mod1+d and
+    # launches polybar and picom twice.
     if grep -q '^# Custom Rice Settings$' ~/.config/i3/config; then
         echo "Custom rice settings already present in i3 config. Skipping append."
     else
